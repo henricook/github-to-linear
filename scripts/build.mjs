@@ -1,14 +1,17 @@
 import fs from 'node:fs/promises';
-import pkg from '../package.json' assert { type: 'json' };
-import manifest from '../extension/manifest.json' assert { type: 'json' };
+import pkg from '../package.json' with { type: 'json' };
+import manifest from '../extension/manifest.json' with { type: 'json' };
 
-console.log('Copying source files to dist...');
-await fs.cp('extension', 'dist', { recursive: true });
+const isChromium = process.argv.includes('--chromium');
+const outDir = isChromium ? 'dist/chrome' : 'dist/firefox';
+
+console.log(`Copying source files to ${outDir}...`);
+await fs.cp('extension', outDir, { recursive: true });
 
 console.log('Updating version number in manifest.json...');
 manifest.version = pkg.version;
 
-if (process.argv.includes('--chromium')) {
+if (isChromium) {
   console.log('Updating manifest.json for Chromium compatibility...');
   manifest.manifest_version = 3;
   const swSource = manifest.background.scripts[0];
@@ -18,7 +21,7 @@ if (process.argv.includes('--chromium')) {
 }
 
 await fs.writeFile(
-  'dist/manifest.json',
+  `${outDir}/manifest.json`,
   JSON.stringify(manifest, null, 2),
   'utf-8'
 );

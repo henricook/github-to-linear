@@ -612,7 +612,7 @@ async function fetchExistingIssues(currentIssue) {
     chrome.runtime.sendMessage(
       {
         linearQuery: `{
-  issueSearch(
+  issues(
     filter: {
       or: [
         ${issues.map(makeFilterBlock).join('\n')}
@@ -645,7 +645,7 @@ async function fetchExistingIssues(currentIssue) {
       (response) => resolve(response)
     );
   });
-  return response?.data?.issueSearch?.nodes || null;
+  return response?.data?.issues?.nodes || null;
 }
 
 /**

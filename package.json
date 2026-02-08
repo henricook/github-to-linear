@@ -1,6 +1,6 @@
 {
   "name": "github-to-linear",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "private": "true",
   "description": "Quickly create a Linear ticket from any GitHub PR or issue.",
   "author": "delucis",
@@ -16,7 +16,7 @@
     "@changesets/cli": "^2.26.1",
     "chrome-types": "^0.1.181"
   },
-  "packageManager": "pnpm@8.1.0",
+  "packageManager": "pnpm@10.29.1",
   "webExt": {
     "sourceDir": "extension",
     "run": {
