@@ -1,9 +1,9 @@
 {
   "manifest_version": 2,
-  "name": "GitHub to Linear",
+  "name": "GitHub to Linear Redux",
   "version": "0.0.0",
-  "description": "View and create Linear tickets from any GitHub PR or issue.",
-  "author": "swithinbank@gmail.com",
+  "description": "View and create Linear tickets from any GitHub PR or issue. Maintained fork of GitHub to Linear.",
+  "author": "henri.cook@gmail.com",
   "icons": {
     "16": "images/icon-16.png",
     "32": "images/icon-32.png",

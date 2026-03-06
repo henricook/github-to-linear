@@ -1,4 +1,4 @@
-# Installing GitHub to Linear
+# Installing GitHub to Linear Redux
 
 This guide walks you through installing the browser extension from a GitHub release. No developer tools or command line needed.
 

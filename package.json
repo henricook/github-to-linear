@@ -3,7 +3,7 @@
   "version": "0.8.0",
   "private": "true",
   "description": "Quickly create a Linear ticket from any GitHub PR or issue.",
-  "author": "delucis",
+  "author": "henricook",
   "license": "GPL-3.0",
   "scripts": {
     "build": "node ./scripts/build.mjs",
@@ -24,7 +24,7 @@
       "firefoxProfile": "./resources/web-ext-profile",
       "chromiumProfile": "./resources/web-ext-profile",
       "startUrl": [
-        "https://github.com/delucis/github-to-linear"
+        "https://github.com/henricook/github-to-linear"
       ]
     }
   }

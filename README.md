@@ -1,15 +1,10 @@
-# <img src="resources/store-icon.svg" alt="" align="left" width="45"> GitHub to Linear
+# <img src=”resources/store-icon.svg” alt=”” align=”left” width=”45”> GitHub to Linear Redux
 
-> Browser extension that adds an “Add to Linear” button to GitHub issues and PRs.
+> Maintained fork of [GitHub to Linear](https://github.com/delucis/github-to-linear). Browser extension that adds an “Add to Linear” button to GitHub issues and PRs.
 
 ## Install
 
-[link-chrome]: https://chrome.google.com/webstore/detail/github-to-linear/hlambaminaoofejligodincejhcbljik 'Version published on Chrome Web Store'
-[link-firefox]: https://addons.mozilla.org/firefox/addon/github-to-linear/ 'Version published on Mozilla Add-ons'
-
-[<img src="https://raw.githubusercontent.com/alrra/browser-logos/90fdf03c/src/chrome/chrome.svg" width="48" alt="Chrome" valign="middle">][link-chrome] [<img valign="middle" src="https://img.shields.io/chrome-web-store/v/hlambaminaoofejligodincejhcbljik.svg?label=%20">][link-chrome] and other Chromium browsers
-
-[<img src="https://raw.githubusercontent.com/alrra/browser-logos/90fdf03c/src/firefox/firefox.svg" width="48" alt="Firefox" valign="middle">][link-firefox] [<img valign="middle" src="https://img.shields.io/amo/v/github-to-linear.svg?label=%20">][link-firefox]
+See [INSTALL.md](INSTALL.md) for step-by-step instructions to download and load the extension in Chrome or Firefox.
 
 ## Usage
 
@@ -49,7 +44,7 @@ Currently, authenticating enables the following features:
 
 This is an open-source repository. You can
 
-- [Create an issue](https://github.com/delucis/github-to-linear/issues/new/choose) to report a bug or make a feature request.
+- [Create an issue](https://github.com/henricook/github-to-linear/issues/new/choose) to report a bug or make a feature request.
 - Open a PR to submit changes to the code you made yourself.
 
 ## License

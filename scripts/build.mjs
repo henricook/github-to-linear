@@ -18,6 +18,7 @@ if (isChromium) {
   manifest.background.service_worker = swSource;
   delete manifest.background.scripts;
   delete manifest.options_ui.chrome_style;
+  delete manifest.key;
 }
 
 await fs.writeFile(
