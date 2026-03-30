@@ -1,7 +1,12 @@
 // Run on page load.
 init();
-// Run on each client-side navigation.
+// Re-run on Turbo client-side navigation.
 document.addEventListener('turbo:render', init);
+// Re-run when GitHub's React app re-renders after navigation.
+new MutationObserver(() => init()).observe(document.body, {
+  childList: true,
+  subtree: false,
+});
 
 function init() {
   injectSingleIssueUI();
@@ -13,15 +18,30 @@ function init() {
  */
 async function injectIssueListUI() {
   const containerClass = 'gh2l-list-links';
-  const issueRows = document.querySelectorAll('.js-issue-row');
+
+  // New React-based list view: items inside [data-listview-component="items-list"]
+  const listContainer = document.querySelector('[data-listview-component="items-list"]');
+  const issueRows = listContainer
+    ? listContainer.querySelectorAll('[role="listitem"]')
+    : document.querySelectorAll('.js-issue-row');
+
   for (const row of issueRows) {
     if (row.querySelector('.' + containerClass)) continue;
-    const link = row.querySelector('a');
-    /** @type {HTMLSpanElement | null} */
-    const slot = row.querySelector('.opened-by + span');
-    if (!link || !slot) continue;
+
+    // New UI uses data-testid="issue-pr-title-link", old UI uses first <a>
+    const link = row.querySelector('[data-testid="issue-pr-title-link"]')
+      || row.querySelector('a');
+    if (!link) continue;
+
     const issueMetaData = parseGitHubUrl(link);
     if (!issueMetaData) continue;
+
+    // Find a suitable place to inject. New UI has a metadata container, old UI
+    // uses .opened-by + span.
+    const slot = row.querySelector('[data-testid="list-row-repo-name-and-number"]')
+      || row.querySelector('.opened-by + span');
+    if (!slot) continue;
+
     const identifier = makeGitHubIdentifier(issueMetaData);
     fetchExistingIssues({ url: link.href, identifier }).then((issues) => {
       if (!issues?.length) return;
@@ -33,7 +53,7 @@ async function injectIssueListUI() {
       const issueLinks = issues.map(InlineIssueLink);
       slot.insertAdjacentElement(
         'afterend',
-        h('span', { class: `${containerClass} d-none d-md-inline-flex gap-2 ml-2` }, ...issueLinks)
+        h('span', { class: `${containerClass} d-inline-flex gap-2 ml-2` }, ...issueLinks)
       );
     });
   }
@@ -73,15 +93,19 @@ async function injectSingleIssueUI() {
   if (!issueMetaData) return;
 
   // The header section of an issue/PR we want to inject our link into.
-  const headerMeta = document.querySelector('.gh-header-meta');
-  if (!headerMeta) {
-    console.error('Could not find header meta to inject into.');
-    return;
-  }
+  // New React issues UI uses data-testid="issue-header".
+  // New React PRs UI has no data-testid; target the PageHeader actions area.
+  // Old UI used .gh-header-meta.
+  const headerMeta = document.querySelector('[data-testid="issue-header"]')
+    || document.querySelector('[data-component="PH_Actions"]')
+    || document.querySelector('.gh-header-meta');
+  if (!headerMeta) return;
 
-  // Grab the issue or PR title (thank you GH for using the same class for both).
-  const titleEl = document.querySelector('.js-issue-title');
-  const issueTitle = titleEl?.textContent;
+  // Issue/PR title. New UI uses data-testid="issue-title", old UI uses .js-issue-title.
+  const titleEl = document.querySelector('[data-testid="issue-title"]')
+    || document.querySelector('.js-issue-title')
+    || headerMeta.querySelector('.markdown-title');
+  const issueTitle = titleEl?.textContent?.trim();
 
   const identifier = makeGitHubIdentifier(issueMetaData);
   let title = identifier;
@@ -179,11 +203,12 @@ function injectSidebarUI(issues) {
   if (!issues?.length || document.getElementById(id) || isPrSubView()) {
     return;
   }
-  const sidebar = document.querySelector('.Layout-sidebar');
-  if (!sidebar) {
-    console.error('Could not find page sidebar.');
-    return;
-  }
+  // New React issues UI uses data-testid="issue-viewer-metadata-pane",
+  // old PR/issue UI uses #partial-discussion-sidebar or .Layout-sidebar.
+  const sidebar = document.querySelector('[data-testid="issue-viewer-metadata-pane"]')
+    || document.querySelector('#partial-discussion-sidebar')
+    || document.querySelector('.Layout-sidebar');
+  if (!sidebar) return;
 
   const [firstIssue, ...moreIssues] = issues;
   const nMore = moreIssues.length;
@@ -697,8 +722,11 @@ function makeGitHubIdentifier({ org, repo, number }) {
  * for any GitHub issues linked to this PR.
  */
 function getLinkedIssues() {
-  const linkEls =
-    document.querySelector('development-menu')?.querySelectorAll('a') || [];
+  // New React UI uses data-testid=”sidebar-development-section”,
+  // old UI uses the <development-menu> custom element.
+  const devSection = document.querySelector('[data-testid=”sidebar-development-section”]')
+    || document.querySelector('development-menu');
+  const linkEls = devSection?.querySelectorAll('a') || [];
   return [...linkEls]
     .map((a) => {
       const metadata = parseGitHubUrl(a);

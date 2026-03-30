@@ -4,3 +4,5 @@ node_modules
 dist
 resources/web-ext-profile/*
 !resources/web-ext-profile/.gitkeep
+test-results/
+playwright-report/

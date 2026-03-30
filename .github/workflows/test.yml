@@ -1,0 +1,21 @@
+name: Test
+
+on:
+  push:
+    branches: [latest]
+  pull_request:
+    branches: [latest]
+
+jobs:
+  browser-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: pnpm/action-setup@v4
+      - run: pnpm install
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm build:chrome:test
+      - run: xvfb-run pnpm test

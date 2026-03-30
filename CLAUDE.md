@@ -12,10 +12,12 @@ Browser extension (Chrome + Firefox) that adds Linear integration to GitHub. Sho
 pnpm install              # Install dependencies
 pnpm build                # Build for Firefox (MV2) -> dist/
 pnpm build:chrome         # Build for Chrome (MV3) -> dist/
+pnpm build:chrome:test    # Build Chrome with localhost mock API for testing
+pnpm test                 # Run Playwright browser tests (requires build:chrome:test first)
 pnpm changeset            # Add release notes for changes
 ```
 
-No tests or linting exist in this project.
+No linting exists in this project.
 
 Dev mode (`pnpm dev` / `pnpm dev:chrome`) opens a temp browser with the extension loaded - the human operator runs this, not Claude.
 
@@ -25,7 +27,7 @@ Plain JavaScript, no build step for source code. The build script (`scripts/buil
 
 ### Extension Components
 
-- **Content script** (`extension/scripts/content.js`) - Runs on GitHub pages. Parses URLs, detects issue/PR pages, injects Linear UI (sidebar cards, list links, "Add to Linear" buttons). Uses hyperscript-style `h()` and `s()` helper functions for DOM creation. Listens for GitHub's `turbo:render` event to handle SPA navigation.
+- **Content script** (`extension/scripts/content.js`) - Runs on GitHub pages. Parses URLs, detects issue/PR pages, injects Linear UI (sidebar cards, list links, "Add to Linear" buttons). Uses hyperscript-style `h()` and `s()` helper functions for DOM creation. Listens for `turbo:render` and a MutationObserver on `document.body` to handle SPA navigation. Supports both GitHub's new React-based UI (`data-testid` selectors) and legacy UI (`.gh-header-meta`, `.js-issue-title`, etc.).
 
 - **Background script** (`extension/scripts/background.js`) - Bridges content script to Linear GraphQL API. Receives `{ linearQuery }` messages, POSTs to `https://api.linear.app/graphql`, returns results. Has a 30-second query cache.
 
@@ -42,6 +44,15 @@ Plain JavaScript, no build step for source code. The build script (`scripts/buil
 
 - The upstream extension used the deprecated `issueSearch` GraphQL endpoint - this fork uses the replacement `issues` endpoint (fix from unmerged upstream PR #38)
 - Options page has potential XSS via `innerHTML` when rendering Linear API profile data
+### Testing
+
+Browser tests use Playwright to load the built Chrome extension into real Chromium and verify DOM injection. A local Node HTTP server (`tests/browser/helpers/mock-server.mjs`) serves both:
+- **GitHub page fixtures** (`tests/browser/fixtures/pages/`) - real GitHub HTML captured with scripts stripped so static DOM is preserved
+- **Linear API mock** at `/graphql` - returns canned responses from `tests/browser/fixtures/linear-responses.mjs`
+
+The `--test` flag on `build.mjs` patches the built extension to use `localhost:3390` instead of `api.linear.app`, and adds localhost to the manifest's content script matches. Source files in `extension/` are never modified.
+
+To refresh HTML fixtures when GitHub changes their DOM, use Playwright to capture live pages (strip `<script>` tags to preserve the static DOM).
 
 ## Release Process
 

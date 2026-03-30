@@ -33,7 +33,15 @@
   },
   "browser_specific_settings": {
     "gecko": {
-      "id": "{51c088ab-6ad6-455e-8988-8c7801ea2487}"
+      "id": "{a86d0411-ea94-4c6c-b655-a134f558e0ad}",
+      "strict_min_version": "140.0",
+      "data_collection_permissions": {
+        "required": ["none"],
+        "optional": []
+      }
+    },
+    "gecko_android": {
+      "strict_min_version": "142.0"
     }
   },
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAoq0jUgZWo0ULoETpbFOTFpTBp68VjK61fWLY9RVjmrIR5jTmNXBobwBf4Cwrn0iP1rm2koTGw3fycEcuDlDWqdITZawIlEKhvl6Kz278Lqx54zsljbPzf5t/alTmJe9rhSfTsIhFGsROT9I7PZgvTzNhBOCJPPH8BgVQv1KsU9hzeYY5+7eYcQze7FQh1/TLtE6yYJz3311FBIFGpka5zOredty/g6Q02K9/Rxc6SFYWbxqeaEgMbPHXj/tju0otbaIVFEFfniMVZSeM9ROfytpJzb/5RVRgaz4DdEjZclo05LoelOIL9L5/4ZPdq7zKR+4MwZpOcfCvLns0h9lckQIDAQAB"
